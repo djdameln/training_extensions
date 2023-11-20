@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Models Optimization &#8212; OpenVINO™ Training Extensions 1.6.0dev documentation</title>
+    <title>Configurable Input Size &#8212; OpenVINO™ Training Extensions 1.6.0dev documentation</title>
   
   
   
@@ -42,11 +42,11 @@
     <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/clipboard.min.js"></script>
     <script src="../../../_static/copybutton.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'guide/explanation/additional_features/models_optimization';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'guide/explanation/additional_features/config_input_size';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Hyperparameters Optimization" href="hpo.html" />
-    <link rel="prev" title="Additional Features" href="index.html" />
+    <link rel="next" title="API" href="../../reference/api/index.html" />
+    <link rel="prev" title="Improve Small Object Detection with Image Tiling" href="tiling.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="docsearch:language" content="en">
   </head>
@@ -280,7 +280,7 @@
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Additional Features</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-9"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Models Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models_optimization.html">Models Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hpo.html">Hyperparameters Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="auto_configuration.html">Auto-configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adaptive_training.html">Adaptive Training</a></li>
@@ -288,7 +288,7 @@
 <li class="toctree-l2"><a class="reference internal" href="noisy_label_detection.html">Noisy Label Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fast_data_loading.html">Fast Data Loading</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tiling.html">Improve Small Object Detection with Image Tiling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="config_input_size.html">Configurable Input Size</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Configurable Input Size</a></li>
 </ul>
 </li>
 </ul>
@@ -460,28 +460,67 @@
             
             <article class="bd-article" role="main">
               
-  <section id="models-optimization">
-<h1>Models Optimization<a class="headerlink" href="#models-optimization" title="Permalink to this heading">#</a></h1>
-<p>OpenVINO™ Training Extensions provides two types of optimization algorithms: <a class="reference external" href="https://docs.openvino.ai/latest/pot_introduction.html#doxid-pot-introduction">Post-training Optimization Tool (POT)</a> and <a class="reference external" href="https://github.com/openvinotoolkit/nncf">Neural Network Compression Framework (NNCF)</a>.</p>
-<section id="post-training-optimization-tool">
-<h2>Post-training Optimization Tool<a class="headerlink" href="#post-training-optimization-tool" title="Permalink to this heading">#</a></h2>
-<p>POT is designed to optimize the inference of models by applying post-training methods that do not require model retraining or fine-tuning. If you want to know more details about how POT works and to be more familiar with model optimization methods, please refer to <a class="reference external" href="https://docs.openvino.ai/latest/pot_introduction.html#doxid-pot-introduction">documentation</a>.</p>
-<p>To run Post-training optimization it is required to convert the model to OpenVINO™ intermediate representation (IR) first. To perform fast and accurate quantization we use <code class="docutils literal notranslate"><span class="pre">DefaultQuantization</span> <span class="pre">Algorithm</span></code> for each task. Please, see the <a class="reference external" href="https://docs.openvino.ai/latest/pot_compression_algorithms_quantization_default_README.html#doxid-pot-compression-algorithms-quantization-default-r-e-a-d-m-e">DefaultQuantization Parameters</a> for further information about configuring the optimization.</p>
-<p>POT parameters can be found and configured in <code class="docutils literal notranslate"><span class="pre">template.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration.yaml</span></code> for each task. For Anomaly and Semantic Segmentation tasks, we have separate configuration files for POT, that can be found in the same directory with <code class="docutils literal notranslate"><span class="pre">template.yaml</span></code>, for example for <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/anomaly/configs/classification/padim/ptq_optimization_config.py">PaDiM</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/segmentation/configs/ocr_lite_hrnet_18_mod2/ptq_optimization_config.py">OCR-Lite-HRNe-18-mod2</a> model.</p>
-</section>
-<section id="neural-network-compression-framework">
-<h2>Neural Network Compression Framework<a class="headerlink" href="#neural-network-compression-framework" title="Permalink to this heading">#</a></h2>
-<p>NNCF utilizes Training-time Optimization algorithms. It is a set of advanced algorithms for training-time model optimization within the Deep Learning framework such as Pytorch.
-The process of optimization is controlled by the NNCF configuration file. A JSON configuration file is used for easier setup of the parameters of the compression algorithm. See <a class="reference external" href="https://github.com/openvinotoolkit/nncf/blob/develop/docs/ConfigFile.md">configuration file description</a>.</p>
-<p>You can refer to configuration files for default templates for each task accordingly: <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/classification/configs/efficientnet_b0_cls_incr/compression_config.json">Classification</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/detection/configs/detection/mobilenetv2_atss/compression_config.json">Object Detection</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/segmentation/configs/ocr_lite_hrnet_18_mod2/compression_config.json">Semantic segmentation</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/detection/configs/instance_segmentation/efficientnetb2b_maskrcnn/compression_config.json">Instance segmentation</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/anomaly/configs/classification/padim/compression_config.json">Anomaly classification</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/anomaly/configs/detection/padim/compression_config.json">Anomaly Detection</a>, <a class="reference external" href="https://github.com/openvinotoolkit/training_extensions/blob/develop/src/otx/algorithms/anomaly/configs/segmentation/padim/compression_config.json">Anomaly segmentation</a>. Configs for other templates can be found in the same directory.</p>
-<p>NNCF tends to provide better quality in terms of preserving accuracy as it uses training compression approaches.
-Compression results achievable with the NNCF can be found <a class="reference external" href="https://github.com/openvinotoolkit/nncf#nncf-compressed-model-zoo">here</a> .
-Meanwhile, the POT is faster but can degrade accuracy more than the training-enabled approach.</p>
+  <section id="configurable-input-size">
+<h1>Configurable Input Size<a class="headerlink" href="#configurable-input-size" title="Permalink to this heading">#</a></h1>
+<p>This feature makes OTX use smaller input resolutions to expedite training and inference times,
+or opt for larger input size to enhance overall model capabilities.</p>
+<p>Rather than manually modifying values within the data pipeline, a streamlined approach is provided.
+You can change the model’s input size by simply adding an argument during <cite>train</cite>, <cite>eval</cite>, or <cite>export</cite>.
+Furthermore, when using a model weight trained on an input size other than the default,
+OTX automatically aligns data pipelines to input size during <cite>eval`</cite> and <cite>export</cite> processes.</p>
+<p>You can use this feature using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ otx train \
+      ... \
+      params --learning_parameters.input_size input_size
+</pre></div>
+</div>
+<p>The available input sizes are currently as follows:</p>
+<ul class="simple">
+<li><p>64x64 (only for classification)</p></li>
+<li><p>128x128 (only for classification)</p></li>
+<li><p>224x224 (only for classification)</p></li>
+<li><p>256x256</p></li>
+<li><p>384x384</p></li>
+<li><p>512x512</p></li>
+<li><p>768x768</p></li>
+<li><p>1024x1024</p></li>
+<li><p>Default (per-model default input size)</p></li>
+<li><p>Auto (adaptive to dataset statistics)</p></li>
+</ul>
+<section id="adaptive-input-size">
+<span id="id1"></span><h2>Adaptive Input Size<a class="headerlink" href="#adaptive-input-size" title="Permalink to this heading">#</a></h2>
+<p>“Auto” mode tries to automatically select the right size
+based on given dataset statictics.</p>
+<ol class="arabic simple">
+<li><p>OTX analyzes the input dataset to get robust statistics.</p></li>
+<li><p>Input size is initially set to typical large image size.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_size</span> <span class="o">=</span> <span class="n">large_image_size</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>(Optionally) Input size is adjusted by object sizes in the dataset, if any.
+The input size from image size is rescaled accoridng to the ratio of
+minimum recongnizable object size of models, which is typically 16x16 ~ 32x32,
+and the typical small object size in the dataset.
+In short, if objects are 64x64 in general in 512x512 image,
+it will be down-scaled to 256x256 as 32x32 objects are enough to be detected.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_size</span> <span class="o">=</span> <span class="n">input_size</span> <span class="o">*</span> <span class="n">MIN_RECOGNIZABLE_OBJECT_SIZE</span> <span class="o">/</span> <span class="n">small_object_size</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Select the closest size from standard preset sizes</p></li>
+<li><p>Restrict scale-up</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">default_model_input_size</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The main recommendation is to start with post-training compression and use NNCF compression during training if you are not satisfied with the results.</p>
+<p>Using smaller input size with datasets having lower image resolutions or larger objects can yield a speed advantage with minimal impact on model performance.
+But note that the choice of small input size can potentially influence model performance based on the task, model architecture, and dataset characteristics.</p>
 </div>
-<p>Please, refer to our <a class="reference internal" href="../../tutorials/base/how_to_train/index.html"><span class="doc">dedicated tutorials</span></a> on how to optimize your model using POT or NNCF.</p>
 </section>
 </section>
 
@@ -493,17 +532,17 @@ Meanwhile, the POT is faster but can degrade accuracy more than the training-ena
             <footer class="bd-footer-article">
                 <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-  <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+  <a class='left-prev' id="prev-link" href="tiling.html" title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
           <p class="prev-next-subtitle">previous</p>
-          <p class="prev-next-title">Additional Features</p>
+          <p class="prev-next-title">Improve Small Object Detection with Image Tiling</p>
       </div>
   </a>
-  <a class='right-next' id="next-link" href="hpo.html" title="next page">
+  <a class='right-next' id="next-link" href="../../reference/api/index.html" title="next page">
   <div class="prev-next-info">
       <p class="prev-next-subtitle">next</p>
-      <p class="prev-next-title">Hyperparameters Optimization</p>
+      <p class="prev-next-title">API</p>
   </div>
   <i class="fa-solid fa-angle-right"></i>
   </a>
@@ -524,13 +563,8 @@ Meanwhile, the POT is faster but can degrade accuracy more than the training-ena
 <nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#post-training-optimization-tool">
-   Post-training Optimization Tool
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#neural-network-compression-framework">
-   Neural Network Compression Framework
+  <a class="reference internal nav-link" href="#adaptive-input-size">
+   Adaptive Input Size
   </a>
  </li>
 </ul>
@@ -550,7 +584,7 @@ Meanwhile, the POT is faster but can degrade accuracy more than the training-ena
 <div class="toc-item">
   
 <div class="tocsection sourcelink">
-    <a href="../../../_sources/guide/explanation/additional_features/models_optimization.rst.txt">
+    <a href="../../../_sources/guide/explanation/additional_features/config_input_size.rst.txt">
         <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
 </div>
